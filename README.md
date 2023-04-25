@@ -1,6 +1,4 @@
 # Customer-Management-Platform
-
-# Please follow the given procedure to see the result
 ## Step: 1
   Clone the directory using command `git clone https://github.com/Sourabhwitho/Customer-Management-Platform/
 ## Step: 2
