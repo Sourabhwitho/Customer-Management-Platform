@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 
@@ -207,3 +207,10 @@ def updateCustomer(request, pk):
 	
 	context = {'form':form }
 	return render(request, 'accounts/forms.html', context)
+
+@login_required(login_url='login')
+def placeOrder(request,pk):
+	product=Product.objects.get(name=pk)
+	customer=request.user.customer
+	Order.objects.create(product=product, customer=customer, status="Pending")
+	return redirect('/')
