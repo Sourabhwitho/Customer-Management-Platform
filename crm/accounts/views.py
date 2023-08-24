@@ -12,7 +12,7 @@ from django.contrib.auth.models import Group
 
 # Create your views here.
 from .models import *
-from .forms import OrderForm, CreateUserForm, CustomerForm
+from .forms import *
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
@@ -101,7 +101,6 @@ def accountSettings(request):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
 def products(request):
 	products = Product.objects.all()
 
@@ -123,14 +122,12 @@ def customer(request, pk):
 	return render(request, 'accounts/customer.html',context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
 def createOrder(request, pk):
-	OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=10 )
+	OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=2 )
 	customer = Customer.objects.get(id=pk)
 	formset = OrderFormSet(queryset=Order.objects.none(),instance=customer)
 	#form = OrderForm(initial={'customer':customer})
 	if request.method == 'POST':
-		#print('Printing POST:', request.POST)
 		form = OrderForm(request.POST)
 		formset = OrderFormSet(request.POST, instance=customer)
 		if formset.is_valid():
@@ -138,12 +135,12 @@ def createOrder(request, pk):
 			return redirect('/')
 
 	context = {'form':formset}
-	return render(request, 'accounts/order_form.html', context)
+	return render(request, 'accounts/forms.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def updateOrder(request, pk):
-
+	print(pk)
 	order = Order.objects.get(id=pk)
 	form = OrderForm(instance=order)
 
@@ -154,7 +151,7 @@ def updateOrder(request, pk):
 			return redirect('/')
 
 	context = {'form':form}
-	return render(request, 'accounts/order_form.html', context)
+	return render(request, 'accounts/forms.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -166,3 +163,47 @@ def deleteOrder(request, pk):
 
 	context = {'item':order}
 	return render(request, 'accounts/delete.html', context)
+
+@login_required(login_url='login')
+@admin_only
+def AddProd(request):
+	formset = ProductForm()
+	if request.method == 'POST':
+		formset = ProductForm(request.POST)
+		if formset.is_valid():
+			formset.save()
+			return redirect('/')
+	
+	context = {'form':formset}
+	return render(request, 'accounts/addproduct.html', context)
+
+@login_required(login_url='login')
+@admin_only
+def CreateCustomer(request):
+	formset = CustomerForm()
+	if request.method == 'POST':
+		formset = CustomerForm(request.POST)
+		if formset.is_valid():
+			formset.save()
+			return redirect('/')
+	
+	context = {'form':formset}
+	return render(request, 'accounts/forms.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def updateCustomer(request, pk):
+	print(pk)
+	# userr= User.objects.get(id=pk)
+	# print(userr.username)
+	customer = Customer.objects.get(id=pk)
+	form = CustomerForm(instance=customer)
+
+	if request.method == 'POST':
+		form = CustomerForm(request.POST, instance=customer)
+		if form.is_valid():
+			form.save()
+			return redirect('/')
+	
+	context = {'form':form }
+	return render(request, 'accounts/forms.html', context)

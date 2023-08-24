@@ -22,10 +22,16 @@
 								<td>{{i.name}}</td>
 								<td>{{i.category}}</td>
 								<td>{{i.price}}</td>
+								{% if request.user.is_staff %} 
+								<td><a class="btn btn-primary  btn-sm btn-info" href="{% url 'update_order' i.id %}">Place Order</a></td>
+								{% endif %}
 							</tr>
 						{% endfor %}
 						
 					</table>
+					{% if request.user.is_staff %} 
+						<a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'add_product' %}">ADD A PRODUCT</a>
+					{% endif %}
 				</div>
 			</div>
 			

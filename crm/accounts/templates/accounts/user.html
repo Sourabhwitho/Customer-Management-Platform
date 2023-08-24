@@ -8,7 +8,6 @@
 			<table class="table table-sm">
 				<tr>
 					<th>Product</th>
-					<th>Note</th>
 					<th>Date Orderd</th>
 					<th>Status</th>
 				</tr>
@@ -17,7 +16,6 @@
 
 				<tr>
 					<td>{{order.product}}</td>
-					<td>{{order.note}}</td>
 					<td>{{order.date_created}}</td>
 					<td>{{order.status}}</td>
 				</tr>
@@ -26,6 +24,7 @@
 			</table>
 		</div>
 	</div>
+	<a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'create_order' user.id %}">Place Order</a>
 </div>
 
 {% endblock content %}
