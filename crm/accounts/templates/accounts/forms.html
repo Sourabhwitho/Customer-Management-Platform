@@ -11,11 +11,19 @@
 				{% csrf_token %}
 				{{ form.management_form }}
 				{% for field in form %}
-					{{field.label}} : {{field}}
+				{% if request.user.is_staff %}
+				{{field.label}} : {{field}}
+				{% else %}
+				{{field}}
+					{% if field.label == "status" %}
+
+					{% else %}
+					{% endif %}
+				{% endif %}
 					<hr>
 				{% endfor %}
-				
-				<input type="submit" name="Submit">
+				<a class="btn btn-warning" href="{% url 'home' %}">Cancel</a>
+				<input class="btn btn-danger" type="submit" name="Confirm">
 			</form>
 
 		</div>

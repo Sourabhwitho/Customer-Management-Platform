@@ -2,29 +2,21 @@
 {% load static %}
 {% block content %}
 
-
+<br>
 <div class="row">
 	<div class="col-md-6">
 		<div class="card card-body">
-			
-			<form action="" method="POST">
-				{% csrf_token %}
-				{{ form.management_form }}
-				{% for field in form %}
-				{{field.label}} : {{field}}
-					<hr>
-				{% endfor %}
-				
-				<input class="btn btn-danger" type="submit" name="Submit">
-				<a class="btn btn-warning" href="{% url 'home' %}">Cancel</a>
-				<br>
-				<br>
-				
-			</form>
 
+
+			<p>Are you sure you want to order "{{item}}"?</p>
+
+			<form action="{% url 'place_order' item.name  %}" method="POST">
+				{% csrf_token %}
+				<a class="btn btn-warning" href="{% url 'home' %}">Cancel</a>
+				<input class="btn btn-danger" type="submit" name="Confirm">
+			</form>
 		</div>
 	</div>
 </div>
-
 
 {% endblock %}

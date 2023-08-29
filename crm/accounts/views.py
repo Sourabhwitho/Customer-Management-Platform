@@ -103,7 +103,6 @@ def accountSettings(request):
 @login_required(login_url='login')
 def products(request):
 	products = Product.objects.all()
-
 	return render(request, 'accounts/products.html', {'products':products})
 
 @login_required(login_url='login')
@@ -123,18 +122,19 @@ def customer(request, pk):
 
 @login_required(login_url='login')
 def createOrder(request, pk):
-	OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=2 )
-	customer = Customer.objects.get(id=pk)
+	OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=1)
+	customer = Customer.objects.get(name=pk)
 	formset = OrderFormSet(queryset=Order.objects.none(),instance=customer)
-	#form = OrderForm(initial={'customer':customer})
+	print(formset)
 	if request.method == 'POST':
-		form = OrderForm(request.POST)
+		OrderForm(request.POST)
 		formset = OrderFormSet(request.POST, instance=customer)
 		if formset.is_valid():
+			# formset.status='Pending'
 			formset.save()
 			return redirect('/')
 
-	context = {'form':formset}
+	context = {'field':formset}
 	return render(request, 'accounts/forms.html', context)
 
 @login_required(login_url='login')
@@ -161,7 +161,7 @@ def deleteOrder(request, pk):
 		order.delete()
 		return redirect('/')
 
-	context = {'item':order}
+	context = {'item':order,'action':"order"}
 	return render(request, 'accounts/delete.html', context)
 
 @login_required(login_url='login')
@@ -172,7 +172,7 @@ def AddProd(request):
 		formset = ProductForm(request.POST)
 		if formset.is_valid():
 			formset.save()
-			return redirect('/')
+			return redirect('/products')
 	
 	context = {'form':formset}
 	return render(request, 'accounts/addproduct.html', context)
@@ -212,5 +212,20 @@ def updateCustomer(request, pk):
 def placeOrder(request,pk):
 	product=Product.objects.get(name=pk)
 	customer=request.user.customer
-	Order.objects.create(product=product, customer=customer, status="Pending")
-	return redirect('/')
+	if request.method == "POST":
+		Order.objects.create(product=product, customer=customer, status="Pending")
+		return redirect('/')
+	context = {'item':product}
+	return render(request, 'accounts/place_order.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def deleteProd(request, pk):
+	product=Product.objects.get(name=pk)
+	if request.method == "POST":
+		product.delete()
+		return redirect('/products')
+
+	context = {'item':product, 'action': "prod" }
+	return render(request, 'accounts/delete.html', context)
