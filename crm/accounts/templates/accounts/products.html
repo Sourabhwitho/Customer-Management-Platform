@@ -22,9 +22,13 @@
 								<td>{{i.name}}</td>
 								<td>{{i.category}}</td>
 								<td>{{i.price}}</td>
-								{% if request.user.is_staff %} 
-								<td><a class="btn btn-primary  btn-sm btn-info" href="{% url 'update_order' i.id %}">Place Order</a></td>
+								{% if request.user.is_staff %}
+ 								{% else %}
+								<td><a class="btn btn-primary  btn-sm btn-info" href="{% url 'place_order' pk=i.name %}">Place Order</a></td>
 								{% endif %}
+								{% if request.user.is_staff %}
+							   <td><a class="btn btn-outline-danger " href="{% url 'delete_item' pk=i.name %}">Delete</a></td>
+							   {% endif %}
 							</tr>
 						{% endfor %}
 						
