@@ -24,7 +24,7 @@
 			</table>
 		</div>
 	</div>
-	<a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'create_order' user.username %}"> {{customer.id}} {{user.username}}   Place Order</a>
+	<a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'create_order' request.user.id %}"> {{request.user.id}} {{user.username}} Place Order</a>
 </div>
 
 {% endblock content %}
