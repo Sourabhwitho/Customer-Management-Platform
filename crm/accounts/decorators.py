@@ -16,6 +16,7 @@ def allowed_users(allowed_roles=[]):
 
 			group = None
 			if request.user.groups.exists():
+				# print(1)
 				group = request.user.groups.all()[0].name
 
 			if group in allowed_roles:

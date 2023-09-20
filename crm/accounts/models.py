@@ -28,7 +28,7 @@ class Product(models.Model):
     price=models.FloatField(null=True)
     description=models.CharField(max_length=200,null=True,blank=True)
     date_added=models.DateTimeField(auto_now_add=True,null=True)
-    tags=models.ManyToManyField(Tag)
+    # tags=models.ManyToManyField(Tag)
     def __str__(self):
         return self.name
 

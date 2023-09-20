@@ -123,9 +123,9 @@ def customer(request, pk):
 @login_required(login_url='login')
 def createOrder(request, pk):
 	OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=1)
-	customer = Customer.objects.get(name=pk)
+	customer = Customer.objects.get(id=pk)
 	formset = OrderFormSet(queryset=Order.objects.none(),instance=customer)
-	print(formset)
+	# print(formset)
 	if request.method == 'POST':
 		OrderForm(request.POST)
 		formset = OrderFormSet(request.POST, instance=customer)
@@ -134,13 +134,13 @@ def createOrder(request, pk):
 			formset.save()
 			return redirect('/')
 
-	context = {'field':formset}
+	context = {'form': formset}
 	return render(request, 'accounts/forms.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def updateOrder(request, pk):
-	print(pk)
+	# print(pk)
 	order = Order.objects.get(id=pk)
 	form = OrderForm(instance=order)
 
@@ -193,7 +193,7 @@ def CreateCustomer(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def updateCustomer(request, pk):
-	print(pk)
+	# print(pk)
 	# userr= User.objects.get(id=pk)
 	# print(userr.username)
 	customer = Customer.objects.get(id=pk)
